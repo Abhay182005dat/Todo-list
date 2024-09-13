@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">To-Do List</h1>
+        <form method="POST" class="form-inline justify-content-center mb-4">
+            {% csrf_token %}
+            <div class="form-group mx-sm-3 mb-2">
+                <input type="text" class="form-control" name="task_name" placeholder="Enter new task" required>
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Add Task</button>
+        </form>
+
+        <!-- Task List -->
+        <ul class="list-group">
+            {% for task in tasks %}
+                <li class="list-group-item d-flex justify-content-between align-items-center {% if task.completed %}list-group-item-success{% endif %}">
+                    <span style="{% if task.completed %}text-decoration: line-through;{% endif %}">
+                        {{ task.name }}
+                    </span>
+                    <div>
+                        {% if not task.completed %}
+                            <!-- Mark as Complete Button -->
+                            <form method="POST" action="{% url 'complete_task' task.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm">Complete</button>
+                            </form>
+                        {% endif %}
+                        <!-- Delete Button -->
+                        <form method="POST" action="{% url 'delete_task' task.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            {% empty %}
+                <li class="list-group-item">No tasks yet! Add one above.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
